@@ -2,7 +2,7 @@
   "name": "@semptian/coderfly",
   "description": "Find function-level association impacts of code changes",
   "version": "0.1.1",
-  "author": "CocaColf <cocacolf@gmail.com>",
+  "author": "CocaColf <beierweiwei@gmail.com>",
   "main": "dist/index.js",
   "bin": {
     "coderfly": "bin/coderfly.js"
@@ -14,7 +14,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CocaColf/coderfly"
+    "url": "https://github.com/beierweiwei/coderfly"
   },
   "scripts": {
     "build": "rimraf dist && tsc && node ./copy_files.js",

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const { program }  = require('commander');
 const ora = require('ora');
@@ -20,7 +20,7 @@ program
     .option('-alias, --alias <alias:path...>', 'set path alias')
     .option('-t, --tree', 'export the file tree to a file')
     .description('check association impacts of code changes')
-    .action((srcPath, options) => {
+    .action(async (srcPath, options) => {
         let alias = {};
 
         if (options.alias) {
@@ -43,13 +43,12 @@ program
         newsBoy.succeed(' Function diff completed ');     
 
         const files = getAllFiles(path.resolve(process.cwd(), srcPath));
-
-        const tree = getFuncTree(files, {
+        const tree = await getFuncTree([{files, options:{
             alias
-        });
+        }}]);
         newsBoy.succeed(' File tree build completed ');
         if (options.tree) {
-            fs.writeFileSync(TREE_FILE, JSON.stringify(tree, null, 4));
+            fs.outputJSON(TREE_FILE, tree, {spaces: '/t'});
             newsBoy.info(` You can check file tree from ${TREE_FILE} `);
         }
 
@@ -74,7 +73,7 @@ program
         });
         newsBoy.succeed(' Association analysis completed ');
         
-        fs.writeFileSync(REPORT_FILE, JSON.stringify(impactReport, null, 4));
+        fs.outputJsonSync(REPORT_FILE, impactReport, {spaces: '\t'});
 
         newsBoy.info(` Job done! You can check the result from ${REPORT_FILE} `);
     });

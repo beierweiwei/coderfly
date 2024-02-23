@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import { visit } from 'recast';
 import { parse } from '@babel/parser';
@@ -17,6 +17,7 @@ import {
 } from '../type';
 import { getTemplateInfo } from './parse_template_ast.js';
 import { getFileInfoWorker } from '../worker/run_worker.js';
+import { cloneDeep } from './help.js';
 
 const { create } = require('enhanced-resolve');
 
@@ -81,7 +82,6 @@ async function getFuncTree (params: FuncTreeParam[]): Promise<FileInfoTree> {
                 handledMixinPath.push(mixinPath);
 
                 const mixinInfo = tree[mixinPath];
-                
                 // if meet a same function name: component first
                 for (const functionName in mixinInfo['allFuncsInfo']) {
                     if (!tree[file]['allFuncsInfo'][functionName]) {
@@ -126,8 +126,16 @@ async function getFuncTree (params: FuncTreeParam[]): Promise<FileInfoTree> {
             }
         });
     }
-
-    fs.writeFileSync(TREE_FILE, JSON.stringify(tree, null, 4));
+    // 修改output tree中的filepath加上行号,方便再文件中直接跳转
+    const _tree = cloneDeep(tree)
+    Object.keys(_tree).forEach(k => {
+      const fileInfo = tree[k]
+      Object.keys(fileInfo.allFuncsInfo).forEach(fk => {
+        const fnInfo = fileInfo.allFuncsInfo[fk]
+        fnInfo.filePath = fnInfo.filePath + ':' +  fnInfo.position?.replace('L', '')
+      })
+    })
+    fs.outputJSON(TREE_FILE, tree, {spaces: '\t'});
 
     return tree;
 }

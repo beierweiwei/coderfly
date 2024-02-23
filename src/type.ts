@@ -123,7 +123,7 @@ export interface GetFileInfoWorkerData {
 }
 
 export interface FuncTreeParam {
-    srcPath: string;
+    srcPath?: string;
     files: string[];
     options?: GetTreeOptions;
 }

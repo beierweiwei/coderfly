@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs-extra';
 import { diff } from './utils/function_change/index.js';
 import { confirmFolderExist, getAllFiles, getFuncTree } from './utils/handle_file_utils.js';
 import { getImpacts } from './impact.js';
@@ -39,7 +39,7 @@ export async function coderfly (srcPath: string, monorepo=false) {
         impactReport.push(impact);
     });
 
-    fs.writeFileSync(REPORT_FILE, JSON.stringify(impactReport, null, 4));
+    fs.outputJsonSync(REPORT_FILE, impactReport, {spaces: '\t'});
 }
 
 async function getSingleTree (srcPath: string) {
@@ -58,15 +58,13 @@ async function getSingleTree (srcPath: string) {
 
     const files = getAllFiles(path.resolve(process.cwd(), srcPath));
 
-    const tree = await getFuncTree([{
+    return getFuncTree([{
         srcPath,
         files, 
         options: {
             alias
         },
     }]);
-
-    return tree;
 }
 
 async function getMonorepoTree (srcPath: string) {
@@ -101,8 +99,7 @@ async function getMonorepoTree (srcPath: string) {
         });
     }
 
-    const tree = await getFuncTree(treeParams);
+    return getFuncTree(treeParams);
 
-    return tree;
 }
 

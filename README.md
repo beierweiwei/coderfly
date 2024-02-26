@@ -24,9 +24,7 @@ You can check [how it works](#how-it-works) from here.
 
 This project is still under development and has not been published to the npm yet. So you can use the built files for now.
 
-- `clone` this project
-- `yarn install`
-- `yarn build`
+- `npm install -g @semptian/coderfly`
 
 ## Usage
 

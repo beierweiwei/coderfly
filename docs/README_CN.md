@@ -22,9 +22,7 @@
 
 该项目还在开发中，暂时未发布到 npm 平台，因此无法使用 npm 进行安装。可以先使用打包后的文件。
 
-- `clone` 本项目
-- `yarn install`
-- `yarn build`
+- `npm install -g @semptian/coderfly`
 
 ## 使用
 
